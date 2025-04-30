@@ -8,8 +8,7 @@ struct AlignedPool([u8; POOL_SIZE]);
 
 static mut NEMA_POOL: AlignedPool = AlignedPool([0; POOL_SIZE]);
 
-static LAST_COMMAND_LIST_ID: core::sync::atomic::AtomicI32 =
-    core::sync::atomic::AtomicI32::new(-1);
+static LAST_COMMAND_LIST_ID: core::sync::atomic::AtomicI32 = core::sync::atomic::AtomicI32::new(-1);
 
 static mut RING_BUFFER: nema_gfx_rs::nema_ringbuffer_t = nema_gfx_rs::nema_ringbuffer_t {
     bo: nema_gfx_rs::nema_buffer_t {
