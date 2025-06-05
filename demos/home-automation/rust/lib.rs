@@ -3,11 +3,10 @@
 
 use chrono::{Datelike, Local, Timelike};
 use kira::{
-    AudioManager, AudioManagerSettings, DefaultBackend,
-    sound::static_sound::StaticSoundData,
+    sound::static_sound::StaticSoundData, AudioManager, AudioManagerSettings, DefaultBackend,
 };
-use std::io::Cursor;
 use slint::{Timer, TimerMode};
+use std::io::Cursor;
 
 #[cfg(target_arch = "wasm32")]
 use wasm_bindgen::prelude::*;
@@ -30,7 +29,7 @@ pub fn main() {
     let app = AppWindow::new().expect("AppWindow::new() failed");
     let app_weak = app.as_weak();
 
-     let mut manager = AudioManager::<DefaultBackend>::new(AudioManagerSettings::default()).unwrap();
+    let mut manager = AudioManager::<DefaultBackend>::new(AudioManagerSettings::default()).unwrap();
 
     let api = app.global::<Api>();
     api.on_play_sound(move |sound| {
@@ -41,7 +40,7 @@ pub fn main() {
         let sound_data = StaticSoundData::from_cursor(cursor).unwrap();
         let _sound_handle = manager.play(sound_data).unwrap();
     });
-    
+
     let timer = Timer::default();
     timer.start(TimerMode::Repeated, std::time::Duration::from_millis(1000), move || {
         if let Some(app) = app_weak.upgrade() {
