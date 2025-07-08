@@ -2,6 +2,7 @@
 
 import slint
 import typing
+import enum
 import os
 
 class ButtonColors:
@@ -47,6 +48,14 @@ class PrinterQueueItem:
     title: str
 
     def __init__(self, *, owner: typing.Optional[str] = None, pages: typing.Optional[float] = None, progress: typing.Optional[float] = None, size: typing.Optional[str] = None, status: typing.Optional[str] = None, submission_date: typing.Optional[str] = None, title: typing.Optional[str] = None) -> None: ...
+
+
+class SubPage(enum.StrEnum):
+    None_ = "None"
+    Print = "Print"
+    Scan = "Scan"
+    Copy = "Copy"
+    Usb = "Usb"
 
 
 class PrinterQueue:
