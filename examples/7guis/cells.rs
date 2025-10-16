@@ -162,7 +162,12 @@ impl CellsModel {
     }
 
     /// Update a cell to a new formula, or re-evaluate the current formula of that cell
-    fn update_cell(&self, row: usize, col: usize, new_formula: Option<SharedString>) -> Option<()> {
+    fn update_cell(
+        &self,
+        row: usize,
+        col: usize,
+        new_formula: Option<SharedString>,
+    ) -> Option<()> {
         let r_model = self.rows.get(row)?;
         let mut r = r_model.row_elements.borrow_mut();
         let data = r.get_mut(col)?;
@@ -181,7 +186,8 @@ impl CellsModel {
             data.value = new;
             drop(r);
             r_model.notify.row_changed(col);
-            let deps = self.dep_graph.borrow().dependents(&(row, col)).cloned().collect::<Vec<_>>();
+            let deps =
+                self.dep_graph.borrow().dependents(&(row, col)).cloned().collect::<Vec<_>>();
             for (r, c) in deps {
                 self.update_cell(r, c, None);
             }
@@ -190,7 +196,7 @@ impl CellsModel {
             r_model.notify.row_changed(col);
         }
 
-        make_deps(&mut *self.dep_graph.borrow_mut(), (row, col), &exp);
+        make_deps(&mut self.dep_graph.borrow_mut(), (row, col), &exp);
 
         Some(())
     }

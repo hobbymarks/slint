@@ -8,14 +8,14 @@ use std::rc::Rc;
 
 slint::slint!(export { MainWindow } from "circledraw.slint";);
 
-enum Change {
-    CircleAdded { row: usize },
-    CircleRemoved { row: usize, circle: Circle },
-    CircleResized { row: usize, old_d: f32 },
+enum CircleChange {
+    Added { row: usize },
+    Removed { row: usize, circle: Circle },
+    Resized { row: usize, old_d: f32 },
 }
 
 struct UndoStack<F> {
-    stack: Vec<Option<Change>>,
+    stack: Vec<Option<CircleChange>>,
     // Everything at and after this is a redo action
     redo_offset: usize,
     undo2redo: F,
@@ -23,13 +23,13 @@ struct UndoStack<F> {
 
 impl<F> UndoStack<F>
 where
-    F: Fn(Change) -> Change,
+    F: Fn(CircleChange) -> CircleChange,
 {
     fn new(undo2redo: F) -> Self {
         Self { stack: Vec::new(), redo_offset: 0, undo2redo }
     }
 
-    fn push(&mut self, change: Change) {
+    fn push(&mut self, change: CircleChange) {
         self.stack.truncate(self.redo_offset);
         self.stack.push(Some(change));
         self.redo_offset += 1;
@@ -70,21 +70,21 @@ pub fn main() {
     {
         let model = model.clone();
         undo_stack = Rc::new(RefCell::new(UndoStack::new(move |change| match change {
-            Change::CircleAdded { row } => {
+            CircleChange::Added { row } => {
                 let circle = model.row_data(row).unwrap();
                 model.remove(row);
-                Change::CircleRemoved { row, circle }
+                CircleChange::Removed { row, circle }
             }
-            Change::CircleRemoved { row, circle } => {
+            CircleChange::Removed { row, circle } => {
                 model.insert(row, circle);
-                Change::CircleAdded { row }
+                CircleChange::Added { row }
             }
-            Change::CircleResized { row, old_d } => {
+            CircleChange::Resized { row, old_d } => {
                 let mut circle = model.row_data(row).unwrap();
                 let d = circle.d;
                 circle.d = old_d;
                 model.set_row_data(row, circle);
-                Change::CircleResized { row, old_d: d }
+                CircleChange::Resized { row, old_d: d }
             }
         })));
     }
@@ -97,8 +97,8 @@ pub fn main() {
             let mut undo_stack = undo_stack.borrow_mut();
             let main_window = window_weak.unwrap();
 
-            model.push(Circle { x: x as f32, y: y as f32, d: 30.0 });
-            undo_stack.push(Change::CircleAdded { row: model.row_count() - 1 });
+            model.push(Circle { x, y, d: 30.0 });
+            undo_stack.push(CircleChange::Added { row: model.row_count() - 1 });
 
             main_window.set_undoable(undo_stack.undoable());
             main_window.set_redoable(undo_stack.redoable());
@@ -142,7 +142,7 @@ pub fn main() {
             let old_d = circle.d;
             circle.d = diameter;
             model.set_row_data(row, circle);
-            undo_stack.push(Change::CircleResized { row, old_d });
+            undo_stack.push(CircleChange::Resized { row, old_d });
 
             main_window.set_undoable(undo_stack.undoable());
             main_window.set_redoable(undo_stack.redoable());

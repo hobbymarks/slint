@@ -23,7 +23,9 @@ export component MainWindow inherits Window {
 
         LineEdit {
             text <=> root.prefix;
-            edited => { root.prefixEdited() }
+            edited => {
+                root.prefixEdited()
+            }
             accessible-label: filter-label.accessible-label;
         }
 
@@ -68,19 +70,26 @@ export component MainWindow inherits Window {
             alignment: start;
 
             Button {
-                clicked => { root.createClicked() }
+                clicked => {
+                    root.createClicked()
+                }
 
                 text: "Create";
             }
+
             Button {
-                clicked => { root.updateClicked() }
+                clicked => {
+                    root.updateClicked()
+                }
 
                 text: "Update";
                 enabled: list.current-item != -1 && list.current-item < root.names-list.length;
-
             }
+
             Button {
-                clicked => { root.deleteClicked() }
+                clicked => {
+                    root.deleteClicked()
+                }
 
                 text: "Delete";
                 enabled: list.current-item != -1 && list.current-item < root.names-list.length;

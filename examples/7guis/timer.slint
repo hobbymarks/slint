@@ -9,6 +9,7 @@ export component MainWindow inherits Window {
 
     Timer {
         interval: 10ms;
+        running: true;
         triggered => {
             root.elapsed-time += self.interval;
             root.elapsed-time = min(root.elapsed-time, root.total-time);
@@ -18,21 +19,27 @@ export component MainWindow inherits Window {
     VerticalBox {
         HorizontalBox {
             padding: 0;
-            Text { text: "Elapsed Time:"; }
+            Text {
+                text: "Elapsed Time:";
+            }
+
             ProgressIndicator {
                 preferred-width: 100px;
                 progress: elapsed-time / total-time;
             }
         }
-        Text{
+
+        Text {
             text: (root.total-time / 1s) + "s";
         }
+
         HorizontalBox {
             padding: 0;
             Text {
                 text: "Duration:";
                 vertical-alignment: center;
             }
+
             slider := Slider {
                 maximum: 30s / 1s;
                 value: 10s / 1s;
@@ -42,6 +49,7 @@ export component MainWindow inherits Window {
                 }
             }
         }
+
         Button {
             text: "Reset";
             clicked => {

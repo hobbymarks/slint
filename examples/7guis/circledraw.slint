@@ -3,7 +3,7 @@
 
 import { LineEdit, Button, Slider, StandardListView, VerticalBox } from "std-widgets.slint";
 
-struct Circle  { x: length, y: length, d: length }
+struct Circle  { x: length, y: length, d: length}
 
 export component MainWindow inherits Window {
     in property <[Circle]> model;
@@ -12,7 +12,7 @@ export component MainWindow inherits Window {
 
     callback undo_clicked();
     callback redo_clicked();
-    callback background_clicked(length,length);
+    callback background_clicked(length, length);
     callback circle_resized(int, length);
 
     private property <int> clicked-idx: -1;
@@ -29,14 +29,20 @@ export component MainWindow inherits Window {
             Button {
                 text: "Undo";
                 enabled <=> root.undoable;
-                clicked => { root.undo-clicked() }
+                clicked => {
+                    root.undo-clicked()
+                }
             }
+
             Button {
                 text: "Redo";
                 enabled <=> root.redoable;
-                clicked => { root.redo-clicked() }
+                clicked => {
+                    root.redo-clicked()
+                }
             }
         }
+
         Rectangle {
             background: white;
             border-color: black;
@@ -52,15 +58,15 @@ export component MainWindow inherits Window {
                 height: 100%;
             }
 
-            for circle[idx] in root.model : Rectangle {
+            for circle[idx] in root.model: Rectangle {
                 background: root.clicked-idx == idx ? gray : white;
                 border-color: black;
                 border-width: 2px;
                 border-radius: self.width / 2;
                 height: self.width;
                 width: circle.d;
-                x: circle.x - self.width/2;
-                y: circle.y - self.height/2;
+                x: circle.x - self.width / 2;
+                y: circle.y - self.height / 2;
 
                 TouchArea {
                     clicked => {
@@ -75,14 +81,16 @@ export component MainWindow inherits Window {
         }
     }
 
-    if (root.clicked-idx != -1) : TouchArea {
-        clicked => { root.clicked-idx = -1; }
+    if (root.clicked-idx != -1): TouchArea {
+        clicked => {
+            root.clicked-idx = -1;
+        }
 
         height: 100%;
         width: 100%;
     }
 
-    if (root.clicked-idx != -1) : Rectangle {
+    if (root.clicked-idx != -1): Rectangle {
         background: lightgray;
         height: 30%;
         width: 70%;
@@ -96,13 +104,13 @@ export component MainWindow inherits Window {
 
         VerticalBox {
             Text {
-                text: "Adjust diameter of circle at (" + root.selected-circle.x / 1px + ", " +  root.selected-circle.y / 1px + ").";
+                text: "Adjust diameter of circle at (" + root.selected-circle.x / 1px + ", " + root.selected-circle.y / 1px + ").";
                 wrap: word-wrap;
             }
 
             Slider {
                 changed(diameter) => {
-                    root.circle_resized(root.clicked-idx, diameter *1px);
+                    root.circle_resized(root.clicked-idx, diameter * 1px);
                 }
 
                 minimum: 4;

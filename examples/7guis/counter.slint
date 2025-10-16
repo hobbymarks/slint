@@ -15,7 +15,9 @@ export component Counter inherits Window {
         }
 
         Button {
-            clicked => { root.value += 1; }
+            clicked => {
+                root.value += 1;
+            }
             text: "Count";
         }
     }

@@ -3,7 +3,7 @@
 
 import { LineEdit, HorizontalBox } from "std-widgets.slint";
 
-component TempConv inherits Window {
+export component TempConv inherits Window {
     preferred-height: 64px;
     layout := HorizontalBox {
         c := LineEdit {
@@ -14,10 +14,12 @@ component TempConv inherits Window {
                 }
             }
         }
+
         Text {
             text: "°Celsius = ";
             vertical-alignment: center;
         }
+
         f := LineEdit {
             text: "32";
             edited(text) => {
@@ -26,6 +28,7 @@ component TempConv inherits Window {
                 }
             }
         }
+
         Text {
             text: "°Fahrenheit";
             vertical-alignment: center;
